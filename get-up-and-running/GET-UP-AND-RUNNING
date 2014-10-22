@@ -1,0 +1,21 @@
+To get this bad boy going, get:
+
+1.  tar xzvf MCCLIBHID.1.54.tgz
+2.  sudo apt-get install libusb libusb-dev libusb-dev 
+
+         OR 
+    sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev libusb-dev 
+
+3.  tar xzvf libhid-02.16.tar.gz && cd libhid-0.2.16/
+4.  change libhid-02.16/tests/lshid.c:41 from
+            len = *((unsigned long*)custom);
+       to:
+            if (len) len = *((unsigned long*)custom);
+5.  ./configure
+6.  sudo make install
+7.  sudo cp 61-mcc.rules /etc/udev/rules.d
+8.  sudo /sbin/udevadm control --reload-rules
+9.  cd libhid
+10. sudo apt-get -f install (I have no idea why this works)
+11. sudo make install
+12. ./test-usb1208LS

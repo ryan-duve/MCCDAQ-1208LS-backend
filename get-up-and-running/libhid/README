@@ -1,0 +1,68 @@
+Special Notes on compiling the libhid version.
+
+1. You must have installed the following packages
+      libusb
+      libusb-devel
+      libusb-static
+
+   For example, on Fedora Core 8, they would be
+      libusb-static-0.1.12-10.fc8
+      libusb-0.1.12-10.fc8
+      libusb-devel-0.1.12-10.fc8
+
+   An easy way to get this is:
+     yum install libusb libusb-devel libusb-static
+
+   or on Ubuntu
+     apt-get install libusb libusb-dev libusb-static
+
+2. You need to make and install the latest version of libhid
+   Instructions on doing this is at http://libhid.alioth.debian.org/.
+
+   Under Debian/Ubuntu:  apt-get install libhid-dev python-hid
+  
+   Under RedHat: svn co svn://svn.debian.org/libhid/trunk libhid-svn
+   cd libhid-svn
+   sh ./autogen.sh
+   make
+   make install
+   (There may be some tweaking under FC6.  You might want to disable SWIG).
+
+   Note!!!!!!!!!!!!!!!!!!!!!!!!!!
+   Ubuntu stopped distributing libhid.  Follow these steps:
+   1. visit http://libhid.alioth.debian.org/ and scroll down to the "Getting
+      libhid" secion and download the tarball:
+       http://alioth.debian.org/frs/download.php/file/1958/libhid-02.16.tar.gz
+
+   2. untar and cd into libhid-0.2.16
+      Since gcc has -Wall -Werror enabled, which is a GOOD thing, when the
+      libhid software builds, it complains about a set but unused variable
+      in the libhid-02.16/tests/lshid.c test program.  The line in question
+      is already a workaround for a different type of compiler error and is
+      only in there to make gcc happy, but the easiest fix is to change
+      line 41 from:
+           len = *((unsigned ling*)custom);
+      to:
+           if (len) len = *((unsigned ling*)custom);
+
+       Now go back up to the libhid-0.2.16 directory and:
+           ./configure; sudo make install
+
+
+3. Get the file 60-mcc.rules (or 61-mcc.rules for Linux 3.X) from ftp://lx10.tx.ncsu.edu/pub/Linux/drivers
+   cp 60-mcc.rules /etc/udev/rules.d
+   /sbin/udevcontrol --reload_rules 
+             or
+   /sbin/udevadm control --reload-rules
+             or
+   /sbin/udevadm control --reload
+             or 
+         ... (udev changes a lot so see the man page for the incantation de jour)
+
+4. NOW you are ready to compile the MCC libhid programs
+   tar zxvf  MCCLIBHID.1.52.tgz
+   cd libhid
+   make
+   make install
+
+
